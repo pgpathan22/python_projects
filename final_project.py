@@ -10,13 +10,6 @@ Original file is located at
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-# Mount Google Drive
-##from google.colab import drive
-##drive.mount('/content/drive')
-
-# Load the dataset
-##df = pd.read_csv('/content/drive/MyDrive/https://drive.google.com/file/d/1nOOi8qHmd-jBOO7BjvLovPhV2cT6spu9/view?usp=drive_link')
-
 # Load the dataset
 df = pd.read_csv('/content/sample_data/ds_salaries.csv')
 
@@ -118,6 +111,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 # Data Preparation
 X = data.drop(['employment_type', 'job_title', 'salary_currency'], axis=1)
@@ -131,7 +126,7 @@ X = X.apply(lambda x: label_encoders[x.name].transform(x) if x.name in label_enc
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Logistic Regression Classifier
-clf_lr = LogisticRegression()
+clf_lr = make_pipeline(StandardScaler(), LogisticRegression())
 clf_lr.fit(X_train, y_train)
 
 y_pred_lr = clf_lr.predict(X_test)
@@ -158,6 +153,9 @@ print("Mean Absolute Error (MAE):", mae)
 print("R-squared (R2) Score:", r2)
 
 from sklearn.ensemble import RandomForestClassifier
+import warnings
+import sklearn.exceptions
+warnings.filterwarnings("ignore", category=sklearn.exceptions.UndefinedMetricWarning)
 
 # Random Forest Classifier
 clf_rf = RandomForestClassifier(n_estimators=100, random_state=42)
